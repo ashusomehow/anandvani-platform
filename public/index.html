@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0">
+  <meta name="theme-color" content="#E05C00">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="Anand Ji Maharaj se baat karo — aapke apne aatmiya spiritual elder.">
+
+  <title>आनंदवाणी — Anand Ji Maharaj</title>
+  <link rel="icon" href="logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="logo.png">
+  <link rel="manifest" href="manifest.json">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;600;700&family=Noto+Serif+Devanagari:wght@600;700&family=Tiro+Devanagari+Hindi&display=swap" rel="stylesheet">
+
+  <style>
+    /* ── Reset ──────────────────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      /* ── Saffron sunrise — light temple morning palette ── */
+      --bg:          #FFF5E8;   /* warm ivory / morning puja light        */
+      --saffron:     #D94F00;   /* deep saffron (readable on cream)       */
+      --marigold:    #F5920A;   /* marigold garland orange                */
+      --gold:        #B86800;   /* richer amber — reads as gold on AMOLED too */
+      --gold-light:  #F5A020;   /* warm gold accent                       */
+      --kumkum:      #CC2200;   /* kumkum sindoor red                     */
+      --green:       #1A7A40;   /* confirmation green (dark on light)     */
+      --text:        #2C0E00;   /* deep warm brown — high contrast        */
+      --text-soft:   rgba(44,14,0,0.78);
+      --text-muted:  rgba(44,14,0,0.62);   /* raised from 0.45 — WCAG AA pass  */
+      --fs-md:       18px;                 /* new mid-size step                 */
+      --user-bg:     #FFF0E2;   /* peach cream — user bubble              */
+      --user-border: rgba(217,79,0,0.30);
+      --aj-bg:       #FFF6DC;   /* richer parchment — clearly distinct from user bubble */
+      --aj-border:   rgba(192,120,8,0.28);
+      --border:      rgba(192,120,8,0.20);
+      --header-bg1:  #A83200;
+      --header-bg2:  #E86000;
+      --r:           18px;
+
+      /* ── FONT SIZES — large for elderly ── */
+      --fs-xs:   14px;
+      --fs-sm:   16px;
+      --fs-base: 20px;
+      --fs-lg:   22px;
+      --fs-xl:   26px;
+      --fs-2xl:  28px;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      /* Fallback chain: Mukta → system Devanagari → generic sans (offline Tier 2/3) */
+      font-family: 'Mukta', 'Noto Sans Devanagari', 'Hind', 'Lohit Devanagari', sans-serif;
+      line-height: 1.9;
+      overscroll-behavior: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* ── App shell — morning saffron sunrise ───────────────────────────────── */
+    #app {
+      display: flex;
+      flex-direction: column;
+      height: 100dvh;
+      max-width: 500px;
+      margin: 0 auto;
+      background: linear-gradient(180deg, #FFF0D5 0%, #FFF5E8 40%, #FFFAF3 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Subtle Om watermark */
+    #app::after {
+      content: 'ॐ';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 300px;
+      color: rgba(200,120,0,0.035);
+      pointer-events: none;
+      font-family: serif;
+      z-index: 0;
+      line-height: 1;
+    }
+
+    /* ── Header — deep temple maroon, logo blazes against dark bg ─────────── */
+    #header {
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
+      background: linear-gradient(180deg, #6B1010 0%, #3D0505 100%);
+      flex-shrink: 0;
+      box-shadow: 0 3px 14px rgba(0,0,0,0.45);
+      position: relative;   /* for absolute-centred title */
+    }
+
+    .logo-img {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+    .logo-text {
+      flex: 1;
+      font-family: 'Noto Serif Devanagari', serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: #FFF5DC;
+      letter-spacing: 0.5px;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.40);
+      white-space: nowrap;
+      margin-left: 10px;
+      line-height: 1;
+      align-self: center;
+      padding-top: 3px;   /* Devanagari ascender compensation */
+    }
+
+    /* ── Avatar section — compact horizontal row ────────────────────────────── */
+    #avatar-section {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      padding: 10px 20px;
+      flex-shrink: 0;
+      gap: 14px;
+      background: transparent;
+      border-bottom: 1px solid rgba(192,120,8,0.12);
+    }
+
+    .avatar-ring {
+      position: relative;
+      width: 80px;
+      height: 80px;
+      flex-shrink: 0;
+    }
+
+    .avatar-info { display: flex; flex-direction: column; justify-content: center; gap: 0; }
+
+    /* Spinning ring — thin border only, color shifts per UI state */
+    .avatar-glow {
+      position: absolute;
+      inset: -3px;
+      border-radius: 50%;
+      background: conic-gradient(from 0deg, #F5C000, #F5920A, #FF6B00, #F5C000, #F5920A, #FF6B00, #F5C000);
+      animation: spin 8s linear infinite;
+      transition: background 0.5s ease;
+      -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 3px));
+              mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 3px));
+    }
+    /* Recording — urgent red pulse */
+    .avatar-ring.recording .avatar-glow {
+      background: conic-gradient(from 0deg, #FF2020, #CC0000, #FF5050, #FF2020, #CC0000, #FF5050, #FF2020);
+      animation: spin 1.5s linear infinite;
+    }
+    /* Processing — slow amber sweep */
+    .avatar-ring.processing .avatar-glow {
+      background: conic-gradient(from 0deg, #FFCC00, #FFB000, #FF9000, #FFCC00, #FFB000, #FF9000, #FFCC00);
+      animation: spin 3s linear infinite;
+    }
+    /* Speaking — warm flowing gold */
+    .avatar-ring.speaking .avatar-glow {
+      background: conic-gradient(from 0deg, #FFD060, #F5A020, #FF7A00, #FFD060, #F5A020, #FF7A00, #FFD060);
+      animation: spin 4s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .avatar-inner {
+      position: absolute;
+      inset: 5px;
+      border-radius: 50%;
+      background: transparent;
+      border: 2.5px solid rgba(245,180,0,0.55);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .avatar-svg {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+      display: block;
+    }
+
+    .avatar-name {
+      font-family: 'Noto Serif Devanagari', serif;
+      font-size: var(--fs-xl);
+      font-weight: 700;
+      color: var(--saffron);
+      line-height: 1.15;
+    }
+    .avatar-subtitle {
+      font-size: var(--fs-sm);
+      color: var(--text-muted);
+      margin-top: 3px;
+      letter-spacing: 0.8px;
+      line-height: 1.2;
+    }
+
+    /* ── Browser warning ────────────────────────────────────────────────────── */
+    #browser-warn {
+      display: none;
+      margin: 10px 16px;
+      padding: 16px;
+      background: rgba(217,79,0,0.08);
+      border: 2px solid rgba(217,79,0,0.35);
+      border-radius: var(--r);
+      font-size: var(--fs-base);
+      color: var(--text);
+      line-height: 1.8;
+      text-align: center;
+    }
+
+    /* ── First-use hint ─────────────────────────────────────────────────────── */
+    #hint-bar {
+      margin: 6px 16px 0;
+      padding: 12px 18px;
+      background: rgba(245,146,10,0.10);
+      border: 1px solid rgba(192,120,8,0.25);
+      border-radius: 12px;
+      font-size: var(--fs-sm);
+      color: var(--saffron);
+      text-align: center;
+      line-height: 1.7;
+      flex-shrink: 0;
+      transition: opacity 0.4s;
+    }
+    #hint-bar.hidden { display: none; }
+
+    /* ── Chat area ──────────────────────────────────────────────────────────── */
+    #chat-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px 14px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      position: relative;
+      z-index: 1;
+    }
+    #chat-area::-webkit-scrollbar { width: 4px; }
+    #chat-area::-webkit-scrollbar-thumb {
+      background: rgba(200,120,0,0.25); border-radius: 4px;
+    }
+
+    /* Message layout */
+    .msg { display: flex; flex-direction: column; max-width: 92%; animation: pop-in 0.3s ease both; }
+    .msg.user  { align-self: flex-end; }
+    .msg.anand { align-self: flex-start; }
+
+    @keyframes pop-in {
+      from { opacity: 0; transform: translateY(10px) scale(0.97); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    /* Labels */
+    .msg-label {
+      font-size: var(--fs-md);             /* 18px — was 16px                   */
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      margin-bottom: 5px;
+      /* text-transform: uppercase REMOVED — Devanagari all-caps is harder to read */
+    }
+    .msg.user  .msg-label { color: var(--saffron); text-align: right; }
+    .msg.anand .msg-label { color: #7A4A00; } /* was #C07808 — contrast 3.8:1 FAIL → now 6.2:1 PASS */
+
+    /* Bubbles */
+    .bubble {
+      padding: 16px 20px;
+      border-radius: var(--r);
+      font-size: var(--fs-base);
+      line-height: 1.9;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: var(--text);
+    }
+
+    .msg.user .bubble {
+      background: var(--user-bg);
+      border: 1.5px solid var(--user-border);
+      border-bottom-right-radius: 5px;
+      box-shadow: 0 1px 4px rgba(200,80,0,0.08);
+    }
+    .msg.anand .bubble {
+      background: var(--aj-bg);
+      border: 1.5px solid var(--aj-border);
+      border-bottom-left-radius: 5px;
+      box-shadow: 0 1px 6px rgba(180,120,0,0.10);
+      font-size: 21px;
+      line-height: 1.75;   /* tighter than body 1.9 — more message visible per screen */
+    }
+
+    /* Shloka block — sage tint for visual breathing room against the warm body text */
+    .shloka {
+      display: block;
+      margin-top: 14px;
+      padding: 12px 16px;
+      background: rgba(60,120,80,0.07);   /* pale sage — restful contrast to warm palette */
+      border-left: 4px solid #5A9E70;     /* muted sage border */
+      border-radius: 0 10px 10px 0;
+      font-family: 'Tiro Devanagari Hindi', 'Noto Serif Devanagari', serif;
+      font-size: var(--fs-base);
+      color: #1A5C30;                     /* deep forest green — legible, spiritual */
+      line-height: 1.85;
+    }
+
+    /* Typing indicator */
+    .typing-bubble {
+      background: var(--aj-bg);
+      border: 1.5px solid var(--aj-border);
+      border-radius: var(--r);
+      border-bottom-left-radius: 5px;
+      padding: 18px 22px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .typing-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--marigold);
+      animation: bounce 1.2s ease-in-out infinite;
+    }
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes bounce {
+      0%,80%,100% { transform: translateY(0); opacity: 0.35; }
+      40%         { transform: translateY(-8px); opacity: 1; }
+    }
+
+    /* ── Bottom controls ────────────────────────────────────────────────────── */
+    #controls {
+      flex-shrink: 0;
+      padding: 14px 20px 26px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(to top, rgba(255,245,232,1) 80%, rgba(255,245,232,0));
+      border-top: 1px solid rgba(192,120,8,0.15);
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Transcript — word-wrap, 3-line clamp */
+    #transcript-display {
+      width: 100%;
+      min-height: 28px;
+      font-size: var(--fs-sm);
+      color: var(--text-muted);
+      text-align: center;
+      font-style: italic;
+      padding: 0 8px;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      white-space: normal;
+      word-break: break-word;
+      transition: color 0.2s;
+    }
+    #transcript-display.active {
+      color: var(--saffron);
+      font-style: normal;
+      font-size: var(--fs-base);
+      font-weight: 600;
+    }
+
+    /* Status */
+    #status-text {
+      font-size: var(--fs-lg);
+      font-weight: 600;
+      color: var(--text-soft);
+      text-align: center;
+      transition: color 0.3s;
+      line-height: 1.5;
+    }
+
+    /* ── MIC BUTTON ─────────────────────────────────────────────────────────── */
+    #mic-btn {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      background: linear-gradient(145deg, #FF8C00, #CC4000);
+      box-shadow:
+        0 0 0 5px rgba(217,79,0,0.15),
+        0 6px 28px rgba(200,70,0,0.40),
+        inset 0 2px 4px rgba(255,200,100,0.35);
+      transition: transform 0.15s ease, box-shadow 0.2s;
+      -webkit-tap-highlight-color: transparent;
+      outline: none;
+    }
+    #mic-btn:active { transform: scale(0.92); }
+
+    .btn-label {
+      font-family: 'Mukta', 'Noto Sans Devanagari', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.95);
+      letter-spacing: 0.3px;
+      line-height: 1;
+      display: none;
+    }
+
+    /* Idle — gold ring signals "ready to interact" */
+    #mic-btn.idle {
+      background: linear-gradient(145deg, #FF8C00, #CC4000);
+      box-shadow:
+        0 0 0 5px rgba(245,180,0,0.45),
+        0 6px 28px rgba(200,70,0,0.40),
+        inset 0 2px 4px rgba(255,200,100,0.35);
+    }
+    #mic-btn.idle .icon-mic,
+    #mic-btn.idle .btn-label { display: block; }
+
+    /* Recording */
+    #mic-btn.recording {
+      background: linear-gradient(145deg, #FF4040, #990000);
+      box-shadow: 0 0 0 5px rgba(220,30,30,0.20), 0 6px 28px rgba(200,20,20,0.45);
+      animation: rec-pulse 1.0s ease-out infinite;
+    }
+    #mic-btn.recording .icon-stop,
+    #mic-btn.recording .btn-label { display: block; }
+    @keyframes rec-pulse {
+      0%  { box-shadow: 0 0 0 5px rgba(220,30,30,0.30), 0 6px 28px rgba(200,20,20,0.45); }
+      60% { box-shadow: 0 0 0 22px rgba(220,30,30,0), 0 6px 28px rgba(200,20,20,0.45); }
+      100%{ box-shadow: 0 0 0 5px rgba(220,30,30,0.30), 0 6px 28px rgba(200,20,20,0.45); }
+    }
+
+    /* Processing */
+    #mic-btn.processing {
+      background: linear-gradient(145deg, #FFBB30, #996000);
+      box-shadow: 0 6px 28px rgba(180,110,0,0.40);
+      animation: none;
+    }
+    #mic-btn.processing .icon-spin,
+    #mic-btn.processing .btn-label { display: block; }
+
+    /* Speaking — warm amber: stays within the saffron palette, avoids jarring blue */
+    #mic-btn.speaking {
+      background: linear-gradient(145deg, #F5A020, #B86800);
+      box-shadow: 0 0 0 5px rgba(200,140,0,0.25), 0 6px 28px rgba(180,110,0,0.50);
+      animation: speak-pulse 0.9s ease-in-out infinite alternate;
+    }
+    #mic-btn.speaking .icon-speaker,
+    #mic-btn.speaking .btn-label { display: block; }
+    @keyframes speak-pulse {
+      from { box-shadow: 0 0 0 4px rgba(200,140,0,0.20), 0 6px 28px rgba(180,110,0,0.40); }
+      to   { box-shadow: 0 0 0 18px rgba(200,140,0,0),   0 6px 28px rgba(180,110,0,0.65); }
+    }
+
+    /* ── Reduced motion — respect vestibular sensitivity ── */
+    @media (prefers-reduced-motion: reduce) {
+      .avatar-glow, .typing-dot, .loading-logo { animation: none !important; }
+      .msg { animation: none !important; opacity: 1; transform: none; }
+      #mic-btn.recording, #mic-btn.speaking  { animation: none !important; }
+    }
+
+    /* Icons */
+    .icon-mic, .icon-stop, .icon-spin, .icon-speaker { display: none; }
+
+    /* Reset button — minimum 48px touch target for elderly users */
+    #reset-btn {
+      font-size: var(--fs-sm);
+      color: var(--text-muted);
+      background: none;
+      border: 1px solid rgba(44,14,0,0.18);
+      border-radius: 24px;
+      cursor: pointer;
+      padding: 14px 24px;
+      margin-top: 2px;
+      transition: opacity 0.2s, color 0.2s, border-color 0.2s;
+      font-family: 'Mukta', 'Noto Sans Devanagari', sans-serif;
+    }
+    #reset-btn:hover { color: var(--saffron); border-color: rgba(217,79,0,0.40); }
+
+    /* WhatsApp share button */
+    .wa-share-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: none;
+      border: 1.5px solid rgba(37,211,102,0.40);
+      color: #1A6B35;
+      border-radius: 20px;
+      padding: 10px 18px;
+      font-size: var(--fs-sm);
+      font-family: 'Mukta', 'Noto Sans Devanagari', sans-serif;
+      cursor: pointer;
+      margin-top: 10px;
+      align-self: flex-start;
+      transition: background 0.2s;
+      font-weight: 600;
+    }
+    .wa-share-btn:hover, .wa-share-btn:active { background: rgba(37,211,102,0.10); }
+
+    /* Retry button (error state) */
+    .retry-btn {
+      display: block;
+      margin-top: 14px;
+      padding: 13px 22px;
+      background: var(--saffron);
+      color: #FFF5DC;
+      border: none;
+      border-radius: 14px;
+      font-size: var(--fs-base);
+      font-family: 'Mukta', 'Noto Sans Devanagari', sans-serif;
+      cursor: pointer;
+      font-weight: 700;
+      width: 100%;
+    }
+
+    /* Trust bar */
+    #trust-bar {
+      text-align: center;
+      font-size: var(--fs-xs);
+      color: var(--text-muted);
+      padding: 4px 16px 6px;
+      flex-shrink: 0;
+    }
+
+    /* Help button — pinned to right edge */
+    #help-btn {
+      background: none;
+      border: none;
+      font-size: 22px;
+      cursor: pointer;
+      margin-left: auto;
+      padding: 6px 8px;
+      line-height: 1;
+      -webkit-tap-highlight-color: transparent;
+      color: rgba(255,245,210,0.85);
+    }
+
+    /* Help overlay */
+    #help-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(44,14,0,0.70);
+      z-index: 300;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    #help-overlay[hidden] { display: none; }
+    #help-card {
+      background: var(--bg);
+      border-radius: 24px;
+      padding: 28px 24px;
+      max-width: 360px;
+      width: 100%;
+      position: relative;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+    }
+    #help-card h2 {
+      font-family: 'Noto Serif Devanagari', serif;
+      font-size: var(--fs-xl);
+      color: var(--saffron);
+      margin-bottom: 18px;
+    }
+    #help-card ol {
+      padding-left: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    #help-card li {
+      font-size: var(--fs-base);
+      color: var(--text);
+      line-height: 1.7;
+    }
+    #help-card p {
+      margin-top: 18px;
+      font-size: var(--fs-sm);
+      color: var(--text-muted);
+    }
+    #help-close {
+      position: absolute;
+      top: 14px; right: 16px;
+      background: none;
+      border: none;
+      font-size: 22px;
+      cursor: pointer;
+      color: var(--text-muted);
+      line-height: 1;
+      padding: 4px 8px;
+    }
+
+    /* ── Toast ──────────────────────────────────────────────────────────────── */
+    #toast {
+      position: fixed;
+      bottom: 160px;
+      left: 50%;
+      transform: translateX(-50%) translateY(16px);
+      background: rgba(44,14,0,0.92);
+      border: 1px solid rgba(200,120,0,0.30);
+      color: #FFF5DC;
+      font-size: var(--fs-base);
+      padding: 12px 24px;
+      border-radius: 30px;
+      opacity: 0;
+      transition: opacity 0.3s, transform 0.3s;
+      pointer-events: none;
+      z-index: 100;
+      white-space: nowrap;
+      backdrop-filter: blur(10px);
+    }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* ── Loading screen ─────────────────────────────────────────────────────── */
+    #loading-screen {
+      position: fixed;
+      inset: 0;
+      /* Dark mahogany — logo's saffron-gold blazes against deep dark bg */
+      background: linear-gradient(160deg, #1A0400 0%, #5A1200 50%, #1A0400 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 22px;
+      z-index: 200;
+      transition: opacity 0.5s;
+    }
+    #loading-screen.hidden { opacity: 0; pointer-events: none; }
+
+    .loading-logo {
+      width: 130px;
+      height: 130px;
+      border-radius: 28px;
+      object-fit: cover;
+      animation: om-glow 1.5s ease-in-out infinite;
+      filter: drop-shadow(0 0 28px rgba(255,200,80,0.90));
+    }
+    @keyframes om-glow {
+      0%,100% { transform: scale(1);    opacity: 0.80; }
+      50%     { transform: scale(1.10); opacity: 1;    }
+    }
+    .loading-text {
+      font-family: 'Noto Serif Devanagari', serif;
+      font-size: 22px;
+      color: #F5C060;
+      letter-spacing: 1px;
+      text-shadow: 0 0 20px rgba(245,180,60,0.60);
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Loading screen -->
+  <div id="loading-screen">
+    <img src="logo.png" class="loading-logo" alt="आनंदवाणी">
+    <div class="loading-text">आनंदवाणी आ रही है...</div>
+  </div>
+
+  <div id="app">
+
+    <!-- Header -->
+    <header id="header">
+      <img src="logo.png" class="logo-img" alt="आनंदवाणी लोगो">
+      <span class="logo-text">आनंदवाणी</span>
+      <button id="help-btn" aria-label="सहायता — कैसे बात करें">❓</button>
+    </header>
+
+    <!-- Avatar — compact horizontal row -->
+    <div id="avatar-section">
+      <div class="avatar-ring idle">
+        <div class="avatar-glow"></div>
+        <div class="avatar-inner">
+          <img src="anandji.png" class="avatar-svg" alt="Anand Ji Maharaj">
+        </div>
+      </div>
+      <div class="avatar-info">
+        <div class="avatar-name">आनंद जी महाराज</div>
+        <div class="avatar-subtitle">ज्ञान · शांति · आशीर्वाद</div>
+      </div>
+    </div>
+
+    <!-- First-use hint (hidden after first tap) -->
+    <div id="hint-bar">
+      👇 नीचे के बड़े बटन को दबाएं और बोलें — आनंद जी सुनेंगे
+    </div>
+
+    <!-- Browser warning -->
+    <div id="browser-warn">
+      ⚠️ कृपया <strong>Chrome</strong> browser में खोलें।<br>
+      Safari में आवाज़ काम नहीं करती।
+    </div>
+
+    <!-- Chat -->
+    <div id="chat-area" aria-live="polite" aria-atomic="false" aria-label="बातचीत"></div>
+
+    <!-- Controls — order: transcript → mic → status → reset -->
+    <div id="controls">
+
+      <!-- Live transcript (what the user said) -->
+      <div id="transcript-display">आप जो बोलेंगे वह यहाँ दिखेगा...</div>
+
+      <!-- BIG MIC BUTTON -->
+      <button id="mic-btn" class="idle" aria-label="आनंद जी से बात करें">
+
+        <!-- Idle: mic icon -->
+        <svg class="icon-mic" width="44" height="44" viewBox="0 0 24 24" fill="white">
+          <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+          <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08C16.39 17.43 19 14.53 19 11h-2z"/>
+        </svg>
+        <span class="btn-label" data-idle="बोलें" data-recording="रोकें" data-processing="रुकें..." data-speaking="सुनें">बोलें</span>
+
+        <!-- Recording: stop icon -->
+        <svg class="icon-stop" width="40" height="40" viewBox="0 0 24 24" fill="white">
+          <rect x="6" y="6" width="12" height="12" rx="3"/>
+        </svg>
+
+        <!-- Processing: spinner -->
+        <svg class="icon-spin" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round">
+          <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83">
+            <animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="0.8s" repeatCount="indefinite"/>
+          </path>
+        </svg>
+
+        <!-- Speaking: speaker icon -->
+        <svg class="icon-speaker" width="40" height="40" viewBox="0 0 24 24" fill="white">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+          <path d="M19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07" stroke="white" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+        </svg>
+      </button>
+
+      <!-- Status — below button so users read it after tapping -->
+      <div id="status-text">यहाँ दबाएं और बोलें</div>
+
+      <!-- Reset — generous touch target -->
+      <button id="reset-btn">🔄 नई बातचीत शुरू करें</button>
+
+    </div>
+
+    <!-- Trust signal -->
+    <div id="trust-bar">🔒 निजी बातचीत · डेटा सुरक्षित · निःशुल्क बीटा 20 जुलाई 2026 तक</div>
+
+  </div>
+
+  <!-- Help overlay -->
+  <div id="help-overlay" hidden>
+    <div id="help-card">
+      <button id="help-close" aria-label="बंद करें">✕</button>
+      <h2>🙏 कैसे बात करें?</h2>
+      <ol>
+        <li>🎙️ नीचे का बड़ा <strong>नारंगी बटन</strong> दबाएं</li>
+        <li>🗣️ <strong>हिंदी में बोलें</strong> — जो मन में हो</li>
+        <li>🔊 आनंद जी का जवाब <strong>सुनें</strong></li>
+        <li>📤 जवाब पसंद आए तो <strong>WhatsApp</strong> पर शेयर करें</li>
+      </ol>
+      <p>नेटवर्क धीमा हो तो थोड़ी देर रुकें। Chrome browser सबसे अच्छा काम करता है।</p>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast"></div>
+
+  <script>
+    /* ═══════════════════════════════════════════════════════════════════════
+       AanandVaani Frontend
+       ─ Web Speech API for STT (browser-native, free, great Hindi on Android)
+       ─ Calls backend for LLM + TTS
+       ─ Plays base64 MP3 response audio
+    ═══════════════════════════════════════════════════════════════════════ */
+
+    // ── CONFIG ──────────────────────────────────────────────────────────────
+    // Same-origin: frontend and API are both served from localhost:8000 locally,
+    // and from the same Vercel domain in production. No CORS issues.
+    const BACKEND_URL = '';
+    // ─────────────────────────────────────────────────────────────────────────
+
+    // ── State ─────────────────────────────────────────────────────────────────
+    let sessionId   = localStorage.getItem('aanandvaani_session') || null;
+    let uiState     = 'idle';   // idle | recording | processing | speaking
+    let recognition = null;
+    let currentAudio= null;
+    let finalTranscript = '';
+
+    // ── DOM refs ──────────────────────────────────────────────────────────────
+    const micBtn          = document.getElementById('mic-btn');
+    const chatArea        = document.getElementById('chat-area');
+    const transcriptDisp  = document.getElementById('transcript-display');
+    const statusText      = document.getElementById('status-text');
+    const resetBtn        = document.getElementById('reset-btn');
+    const toast           = document.getElementById('toast');
+    const loadingScreen   = document.getElementById('loading-screen');
+    const browserWarn     = document.getElementById('browser-warn');
+    const hintBar         = document.getElementById('hint-bar');
+
+    // Hide hint after first use
+    const hintDismissed = localStorage.getItem('hint_dismissed');
+    if (hintDismissed) hintBar.classList.add('hidden');
+
+    // ── Initialise ────────────────────────────────────────────────────────────
+    window.addEventListener('DOMContentLoaded', async () => {
+      checkBrowserSupport();
+      await loadGreeting();
+      hideLoadingScreen();
+    });
+
+    function hideLoadingScreen() {
+      setTimeout(() => {
+        loadingScreen.classList.add('hidden');
+        setTimeout(() => loadingScreen.remove(), 500);
+      }, 600);
+    }
+
+    function checkBrowserSupport() {
+      const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRec) {
+        browserWarn.style.display = 'block';
+        micBtn.disabled = true;
+        micBtn.style.opacity = '0.4';
+        setStatus('Chrome browser zaroori hai', true);
+        return false;
+      }
+      return true;
+    }
+
+    // ── Greeting ──────────────────────────────────────────────────────────────
+    async function loadGreeting() {
+      try {
+        const res  = await fetch(`${BACKEND_URL}/api/greeting?lang=hi`);
+        const data = await res.json();
+
+        if (data.session_id && !sessionId) {
+          sessionId = data.session_id;
+          localStorage.setItem('aanandvaani_session', sessionId);
+        }
+
+        addAnandMessage(data.text);
+
+        if (data.audio) {
+          // Small delay so user sees the message before audio starts
+          setTimeout(() => playAudio(data.audio, /*greeting=*/true), 800);
+        }
+      } catch (err) {
+        console.warn('Greeting fetch failed:', err);
+        // Show a static fallback greeting
+        addAnandMessage('जय श्री राम, बेटा। मैं आनंद जी हूँ। बताओ, आज क्या मन में चल रहा है? ॐ');
+      }
+    }
+
+    // ── Speech Recognition (STT) ──────────────────────────────────────────────
+    function startRecording() {
+      const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRec) return;
+
+      finalTranscript = '';
+      recognition = new SpeechRec();
+      recognition.lang = 'hi-IN';
+      recognition.continuous = false;
+      recognition.interimResults = true;
+      recognition.maxAlternatives = 1;
+
+      recognition.onstart = () => {
+        setUiState('recording');
+        setStatus('सुन रहा हूँ... (रोकने के लिए फिर दबाएं)', false);
+        transcriptDisp.textContent = '';
+        transcriptDisp.classList.add('active');
+        // Dismiss hint on first use
+        if (!localStorage.getItem('hint_dismissed')) {
+          localStorage.setItem('hint_dismissed', '1');
+          hintBar.classList.add('hidden');
+        }
+      };
+
+      recognition.onresult = (event) => {
+        let interim = '';
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          const t = event.results[i][0].transcript;
+          if (event.results[i].isFinal) finalTranscript += t;
+          else interim += t;
+        }
+        transcriptDisp.textContent = finalTranscript || interim || '...';
+      };
+
+      recognition.onerror = (event) => {
+        console.error('Speech error:', event.error);
+        if (event.error === 'no-speech') {
+          showToast('कुछ सुनाई नहीं दिया — फिर कोशिश करें');
+        } else if (event.error === 'not-allowed') {
+          showToast('माइक्रोफ़ोन की अनुमति दें');
+        } else {
+          showToast('आवाज़ नहीं आई — फिर कोशिश करें');
+        }
+        setUiState('idle');
+        resetTranscript();
+      };
+
+      recognition.onend = () => {
+        if (uiState === 'recording') {
+          // Stopped by browser (timeout) or by user
+          onRecordingDone();
+        }
+      };
+
+      try { recognition.start(); }
+      catch (e) {
+        console.error('Recognition start error:', e);
+        setUiState('idle');
+      }
+    }
+
+    function stopRecording() {
+      if (recognition) {
+        recognition.stop();
+        // onend will fire → onRecordingDone
+      }
+    }
+
+    function onRecordingDone() {
+      setUiState('processing');
+      const text = finalTranscript.trim();
+      transcriptDisp.classList.remove('active');
+
+      if (!text) {
+        showToast('कुछ सुनाई नहीं दिया — फिर कोशिश करें');
+        setUiState('idle');
+        resetTranscript();
+        return;
+      }
+
+      addUserMessage(text);
+      resetTranscript();
+      sendToBackend(text);
+    }
+
+    // ── Mic button click handler ──────────────────────────────────────────────
+    micBtn.addEventListener('click', () => {
+      if (uiState === 'idle') {
+        // If Anand Ji is speaking, stop audio first
+        if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+        startRecording();
+      } else if (uiState === 'recording') {
+        stopRecording();
+      } else if (uiState === 'speaking') {
+        if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+        setUiState('idle');
+        setStatus('यहाँ दबाएं और बोलें');
+      }
+      // Ignore clicks while processing
+    });
+
+    // ── Backend API call ──────────────────────────────────────────────────────
+    async function sendToBackend(text) {
+      setStatus('आनंद जी सोच रहे हैं...', false);
+      addTypingIndicator();
+
+      try {
+        const res = await fetch(`${BACKEND_URL}/api/chat`, {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify({ text, session_id: sessionId }),
+        });
+
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+        const data = await res.json();
+
+        // Save session ID
+        if (data.session_id) {
+          sessionId = data.session_id;
+          localStorage.setItem('aanandvaani_session', sessionId);
+        }
+
+        removeTypingIndicator();
+        addAnandMessage(data.response);
+
+        if (data.audio) {
+          playAudio(data.audio);
+        } else {
+          // No audio — just show text
+          setUiState('idle');
+          setStatus('यहाँ दबाएं और बोलें');
+        }
+
+      } catch (err) {
+        console.error('Backend error:', err);
+        removeTypingIndicator();
+        addAnandMessage('बेटा, अभी सर्वर से बात नहीं हो पा रही। नेटवर्क जाँचें और थोड़ी देर में फिर कोशिश करें — ईश्वर सदा साथ हैं। ॐ');
+        // Attach retry button to last message bubble
+        const lastBubble = chatArea.lastElementChild && chatArea.lastElementChild.querySelector('.bubble');
+        if (lastBubble) {
+          const retryBtn = document.createElement('button');
+          retryBtn.className = 'retry-btn';
+          retryBtn.textContent = '🔄 फिर कोशिश करें';
+          retryBtn.onclick = () => { retryBtn.remove(); sendToBackend(text); };
+          lastBubble.appendChild(retryBtn);
+        }
+        setUiState('idle');
+        setStatus('यहाँ दबाएं और बोलें');
+      }
+    }
+
+    // ── Audio playback ────────────────────────────────────────────────────────
+    function playAudio(base64mp3, isGreeting = false) {
+      try {
+        const blob   = base64ToBlob(base64mp3, 'audio/mp3');
+        const url    = URL.createObjectURL(blob);
+        const audio  = new Audio(url);
+        currentAudio = audio;
+
+        if (!isGreeting) {
+          setUiState('speaking');
+          setStatus('आनंद जी बोल रहे हैं... (रोकने के लिए दबाएं)', false);
+        }
+
+        audio.onended = () => {
+          URL.revokeObjectURL(url);
+          currentAudio = null;
+          setUiState('idle');
+          setStatus('यहाँ दबाएं और बोलें');
+        };
+
+        audio.onerror = (e) => {
+          console.error('Audio error:', e);
+          setUiState('idle');
+          setStatus('यहाँ दबाएं और बोलें');
+        };
+
+        audio.play().catch(e => {
+          // Autoplay blocked — show tap-to-play prompt
+          console.warn('Autoplay blocked:', e);
+          setUiState('idle');
+          showToast('🔊 आवाज़ सुनने के लिए कहीं भी दबाएं');
+          // On tap, play
+          const playOnce = () => {
+            audio.play();
+            document.removeEventListener('click', playOnce);
+          };
+          document.addEventListener('click', playOnce, { once: true });
+        });
+
+      } catch (err) {
+        console.error('Audio setup error:', err);
+        setUiState('idle');
+      }
+    }
+
+    function base64ToBlob(base64, mimeType) {
+      const bytes = atob(base64);
+      const arr   = new Uint8Array(bytes.length);
+      for (let i = 0; i < bytes.length; i++) arr[i] = bytes.charCodeAt(i);
+      return new Blob([arr], { type: mimeType });
+    }
+
+    // ── Chat UI helpers ───────────────────────────────────────────────────────
+    function addUserMessage(text) {
+      const msg = document.createElement('div');
+      msg.className = 'msg user';
+      msg.innerHTML = `
+        <div class="msg-label">आप बोले</div>
+        <div class="bubble">${escHtml(text)}</div>
+      `;
+      chatArea.appendChild(msg);
+      scrollToBottom();
+    }
+
+    function addAnandMessage(text) {
+      const msg  = document.createElement('div');
+      msg.className = 'msg anand';
+
+      // Detect and style the shloka (text after the last blank line, usually)
+      const formatted = formatAnandResponse(text);
+
+      msg.innerHTML = `
+        <div class="msg-label">आनंद जी</div>
+        <div class="bubble">${formatted}</div>
+      `;
+
+      // WhatsApp share — shares only the shloka/verse, not the full message
+      const shareBtn = document.createElement('button');
+      shareBtn.className = 'wa-share-btn';
+      shareBtn.innerHTML = '🙏 सुविचार WhatsApp पर भेजें';
+      shareBtn.onclick = () => {
+        // Extract shloka (last paragraph if it contains Devanagari verse markers)
+        const paras = text.split(/\n\n+/).map(p => p.trim()).filter(Boolean);
+        const lastPara = paras[paras.length - 1];
+        const isVerse = paras.length > 1 && /[।॥ऀ-ॿ]/.test(lastPara);
+        const suvichar = isVerse ? lastPara : text;
+        const shareText = `🙏 *आनंद जी महाराज का सुविचार*\n\n${suvichar}\n\n━━━━━━━━━\n📿 आनंद जी से बात करें (निःशुल्क):\nhttps://aanandvaani.vercel.app`;
+        window.open(`https://wa.me/?text=${encodeURIComponent(shareText)}`, '_blank', 'noopener');
+      };
+      msg.appendChild(shareBtn);
+
+      chatArea.appendChild(msg);
+      // Scroll the TOP of this message into view (not the bottom of the container).
+      // This ensures long Anand Ji responses are always read from the beginning.
+      requestAnimationFrame(() => {
+        msg.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    }
+
+    function formatAnandResponse(text) {
+      // Split into paragraphs, apply shloka styling to the last paragraph
+      // if it looks like a verse (contains Devanagari + parenthetical translation)
+      const paras = text.split(/\n\n+/).map(p => p.trim()).filter(Boolean);
+      if (paras.length < 2) return escHtml(text).replace(/\n/g, '<br>');
+
+      const last      = paras[paras.length - 1];
+      const isVerse   = /[।॥ऀ-ॿ]/.test(last);
+
+      const mainParas = paras.slice(0, isVerse ? -1 : undefined)
+        .map(p => `<span>${escHtml(p).replace(/\n/g, '<br>')}</span>`)
+        .join('<br><br>');
+
+      if (!isVerse) return mainParas;
+
+      const shloka = `<span class="shloka">${escHtml(last).replace(/\n/g, '<br>')}</span>`;
+      return mainParas + shloka;
+    }
+
+    let typingEl = null;
+    function addTypingIndicator() {
+      typingEl = document.createElement('div');
+      typingEl.className = 'msg anand';
+      typingEl.id = 'typing-indicator';
+      typingEl.innerHTML = `
+        <div class="msg-label">आनंद जी</div>
+        <div class="typing-bubble">
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+        </div>
+      `;
+      chatArea.appendChild(typingEl);
+      scrollToBottom();
+    }
+
+    function removeTypingIndicator() {
+      const el = document.getElementById('typing-indicator');
+      if (el) el.remove();
+      typingEl = null;
+    }
+
+    function scrollToBottom() {
+      requestAnimationFrame(() => {
+        chatArea.scrollTop = chatArea.scrollHeight;
+      });
+    }
+
+    function resetTranscript() {
+      transcriptDisp.textContent = 'आप जो बोलेंगे वह यहाँ दिखेगा...';
+      transcriptDisp.classList.remove('active');
+    }
+
+    // ── UI state machine ──────────────────────────────────────────────────────
+    const avatarRing = document.querySelector('.avatar-ring');
+    function setUiState(state) {
+      uiState = state;
+      micBtn.className = state;
+      avatarRing.className = `avatar-ring ${state}`;
+
+      // Update the button label text
+      const btnLabel = micBtn.querySelector('.btn-label');
+      const labels = { idle: 'बोलें', recording: 'रोकें', processing: 'रुकें...', speaking: 'सुनें' };
+      if (btnLabel) btnLabel.textContent = labels[state] || '';
+
+      const statusLabels = {
+        idle:       'यहाँ दबाएं और बोलें',
+        recording:  'सुन रहा हूँ... (रोकने के लिए फिर दबाएं)',
+        processing: 'आनंद जी सोच रहे हैं...',
+        speaking:   'आनंद जी बोल रहे हैं...',
+      };
+      setStatus(statusLabels[state] || '');
+    }
+
+    function setStatus(text, muted = true) {
+      statusText.textContent = text;
+      statusText.style.color = muted ? 'var(--text-soft)' : 'var(--gold-light)';
+    }
+
+    // ── Toast ─────────────────────────────────────────────────────────────────
+    let toastTimer = null;
+    function showToast(msg, duration = 3500) {
+      clearTimeout(toastTimer);
+      toast.textContent = msg;
+      toast.classList.add('show');
+      toastTimer = setTimeout(() => toast.classList.remove('show'), duration);
+    }
+
+    // ── Reset session ─────────────────────────────────────────────────────────
+    resetBtn.addEventListener('click', async () => {
+      if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+      if (recognition)  { recognition.abort(); }
+      setUiState('idle');
+      chatArea.innerHTML = '';
+      localStorage.removeItem('aanandvaani_session');
+      sessionId = null;
+
+      try {
+        await fetch(`${BACKEND_URL}/api/reset`, {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify({ session_id: sessionId }),
+        });
+      } catch (e) { /* ignore */ }
+
+      await loadGreeting();
+      showToast('नई बातचीत शुरू हो गई ☀️');
+    });
+
+    // ── Utility ───────────────────────────────────────────────────────────────
+    function escHtml(str) {
+      return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    // ── Help overlay ──────────────────────────────────────────────────────────
+    const helpBtn     = document.getElementById('help-btn');
+    const helpOverlay = document.getElementById('help-overlay');
+    const helpClose   = document.getElementById('help-close');
+
+    helpBtn.addEventListener('click', () => helpOverlay.removeAttribute('hidden'));
+    helpClose.addEventListener('click', () => helpOverlay.setAttribute('hidden', ''));
+    helpOverlay.addEventListener('click', e => {
+      if (e.target === helpOverlay) helpOverlay.setAttribute('hidden', '');
+    });
+
+    // Prevent double-tap zoom on mobile
+    document.addEventListener('dblclick', e => e.preventDefault(), { passive: false });
+  </script>
+</body>
+</html>
