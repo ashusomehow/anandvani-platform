@@ -632,6 +632,13 @@
       transition: opacity 0.5s;
     }
     #login-overlay.hidden { opacity: 0; pointer-events: none; }
+    #login-main, #login-phone, #login-otp {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+    #login-phone[hidden], #login-otp[hidden] { display: none; }
     .login-logo {
       width: 100px;
       height: 100px;
@@ -668,17 +675,133 @@
       cursor: pointer;
       box-shadow: 0 4px 20px rgba(0,0,0,0.20);
       transition: transform 0.15s, box-shadow 0.15s;
-      margin-top: 10px;
     }
     #google-signin-btn:active { transform: scale(0.95); }
     #google-signin-btn img { width: 24px; height: 24px; }
+    .login-divider {
+      font-size: var(--fs-sm);
+      color: rgba(245,200,100,0.45);
+      margin: 4px 0;
+    }
+    #phone-signin-btn {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(245,192,96,0.12);
+      border: 2px solid rgba(245,192,96,0.35);
+      border-radius: 24px;
+      padding: 14px 28px;
+      font-size: var(--fs-base);
+      font-family: 'Mukta', sans-serif;
+      font-weight: 700;
+      color: #F5C060;
+      cursor: pointer;
+      transition: transform 0.15s, background 0.15s;
+    }
+    #phone-signin-btn:active { transform: scale(0.95); background: rgba(245,192,96,0.22); }
+    .phone-icon { font-size: 22px; }
+    .phone-input-row {
+      display: flex;
+      align-items: center;
+      background: rgba(255,245,232,0.10);
+      border: 2px solid rgba(245,192,96,0.35);
+      border-radius: 16px;
+      padding: 4px;
+      width: 100%;
+      max-width: 300px;
+    }
+    .phone-prefix {
+      font-family: 'Mukta', sans-serif;
+      font-weight: 700;
+      font-size: var(--fs-lg);
+      color: #F5C060;
+      padding: 10px 12px;
+      border-right: 1px solid rgba(245,192,96,0.25);
+    }
+    #phone-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: white;
+      font-family: 'Mukta', sans-serif;
+      font-size: var(--fs-lg);
+      padding: 10px 14px;
+      letter-spacing: 2px;
+      caret-color: #F5C060;
+    }
+    #phone-input::placeholder { color: rgba(255,255,255,0.25); }
+    .otp-input-row {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      max-width: 300px;
+    }
+    #otp-input {
+      background: rgba(255,245,232,0.10);
+      border: 2px solid rgba(245,192,96,0.35);
+      border-radius: 16px;
+      padding: 14px;
+      width: 100%;
+      color: white;
+      font-family: 'Mukta', sans-serif;
+      font-size: 28px;
+      font-weight: 700;
+      text-align: center;
+      letter-spacing: 12px;
+      outline: none;
+      caret-color: #F5C060;
+    }
+    #otp-input:focus { border-color: #F5C060; }
+    #otp-input::placeholder { color: rgba(255,255,255,0.25); letter-spacing: 2px; font-size: var(--fs-base); }
+    #send-otp-btn, #verify-otp-btn {
+      background: var(--saffron);
+      border: none;
+      border-radius: 20px;
+      padding: 14px 32px;
+      font-size: var(--fs-base);
+      font-family: 'Mukta', sans-serif;
+      font-weight: 700;
+      color: white;
+      cursor: pointer;
+      transition: transform 0.15s, opacity 0.15s;
+    }
+    #send-otp-btn:disabled, #verify-otp-btn:disabled {
+      opacity: 0.4;
+      cursor: default;
+    }
+    #send-otp-btn:active:not(:disabled), #verify-otp-btn:active:not(:disabled) {
+      transform: scale(0.95);
+    }
+    .back-btn {
+      background: none;
+      border: none;
+      color: rgba(245,200,100,0.55);
+      font-size: var(--fs-sm);
+      font-family: 'Mukta', sans-serif;
+      cursor: pointer;
+      padding: 6px 12px;
+      margin-top: 4px;
+    }
+    .back-btn:hover { color: rgba(245,200,100,0.80); }
     .login-footer {
       font-size: var(--fs-xs);
       color: rgba(255,255,255,0.35);
       text-align: center;
       max-width: 280px;
       line-height: 1.5;
-      margin-top: 20px;
+      margin-top: 8px;
+    }
+    #recaptcha-container {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    /* reCAPTCHA badge must float above login overlay */
+    .grecaptcha-badge {
+      z-index: 600 !important;
+      visibility: visible !important;
     }
     .login-user-info {
       display: flex;
@@ -860,14 +983,50 @@
 
   <!-- Login overlay -->
   <div id="login-overlay">
-    <img src="logo.png" class="login-logo" alt="आनंदवाणी">
-    <div class="login-title">आनंदवाणी</div>
-    <div class="login-subtitle">आनंद जी महाराज से बात करें — निःशुल्क, सुरक्षित, गोपनीय</div>
-    <button id="google-signin-btn">
-      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="">
-      Google से साइन इन करें
-    </button>
-    <div class="login-footer">🔒 आपका डेटा सुरक्षित है · कोई शुल्क नहीं</div>
+    <div id="login-main">
+      <img src="logo.png" class="login-logo" alt="आनंदवाणी">
+      <div class="login-title">आनंदवाणी</div>
+      <div class="login-subtitle">आनंद जी महाराज से बात करें — निःशुल्क, सुरक्षित, गोपनीय</div>
+      <button id="google-signin-btn">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="">
+        Google अकाउंट से जुड़ें
+      </button>
+      <div class="login-divider">या</div>
+      <button id="phone-signin-btn">
+        <span class="phone-icon">📱</span>
+        फ़ोन नंबर से जुड़ें
+      </button>
+      <div class="login-footer">🔒 आपका डेटा सुरक्षित है · कोई शुल्क नहीं</div>
+    </div>
+
+    <!-- Phone number input step -->
+    <div id="login-phone" hidden>
+      <img src="logo.png" class="login-logo" alt="आनंदवाणी">
+      <div class="login-title">फ़ोन नंबर दर्ज करें</div>
+      <div class="login-subtitle">OTP भेजने के लिए अपना मोबाइल नंबर डालें</div>
+      <div class="phone-input-row">
+        <span class="phone-prefix">+91</span>
+        <input type="tel" id="phone-input" inputmode="numeric" pattern="[0-9]*" maxlength="10" placeholder="9876543210">
+      </div>
+      <button id="send-otp-btn" disabled>OTP भेजें 📨</button>
+      <button id="back-to-login-btn" class="back-btn">← वापस</button>
+    </div>
+
+    <!-- OTP verification step -->
+    <div id="login-otp" hidden>
+      <img src="logo.png" class="login-logo" alt="आनंदवाणी">
+      <div class="login-title">OTP दर्ज करें</div>
+      <div class="login-subtitle" id="otp-phone-label">+91 XXXXX पर भेजा गया</div>
+      <div class="otp-input-row">
+        <input type="tel" id="otp-input" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="000000">
+      </div>
+      <button id="verify-otp-btn" disabled>वेरिफ़ाई करें ✅</button>
+      <button id="resend-otp-btn" class="back-btn">दोबारा OTP भेजें</button>
+      <button id="back-to-phone-btn" class="back-btn">← नंबर बदलें</button>
+    </div>
+
+    <!-- reCAPTCHA container -->
+    <div id="recaptcha-container"></div>
   </div>
 
   <!-- Feedback overlay -->
@@ -1063,7 +1222,20 @@
     // ═════════════════════════════════════════════════════════════════════════
 
     const loginOverlay    = document.getElementById('login-overlay');
+    const loginMain       = document.getElementById('login-main');
+    const loginPhone      = document.getElementById('login-phone');
+    const loginOtp        = document.getElementById('login-otp');
     const googleSignInBtn = document.getElementById('google-signin-btn');
+    const phoneSignInBtn  = document.getElementById('phone-signin-btn');
+    const phoneInput      = document.getElementById('phone-input');
+    const sendOtpBtn      = document.getElementById('send-otp-btn');
+    const backToLoginBtn  = document.getElementById('back-to-login-btn');
+    const otpInput        = document.getElementById('otp-input');
+    const verifyOtpBtn    = document.getElementById('verify-otp-btn');
+    const resendOtpBtn    = document.getElementById('resend-otp-btn');
+    const backToPhoneBtn  = document.getElementById('back-to-phone-btn');
+    const otpPhoneLabel   = document.getElementById('otp-phone-label');
+    const recaptchaContainer = document.getElementById('recaptcha-container');
     const feedbackOverlay = document.getElementById('feedback-overlay');
     const feedbackEmojis  = document.querySelectorAll('.feedback-emojis button');
     const feedbackComment = document.getElementById('feedback-comment');
@@ -1071,15 +1243,126 @@
     const feedbackThanks  = document.getElementById('feedback-thanks');
     const feedbackSkip    = document.getElementById('feedback-skip');
     let loginResolve = null;  // promise resolver for auth
+    let confirmationResult = null;  // phone auth verification result
+    let recaptchaVerifier = null;
+    let phoneNumber = '';  // stored for OTP verify step
 
     function showLogin() {
       loginOverlay.classList.remove('hidden');
+      loginMain.hidden = false;
+      loginPhone.hidden = true;
+      loginOtp.hidden = true;
     }
 
     function hideLogin() {
       loginOverlay.classList.add('hidden');
     }
 
+    function showPhoneStep() {
+      loginMain.hidden = true;
+      loginPhone.hidden = false;
+      loginOtp.hidden = true;
+      phoneInput.value = '';
+      phoneInput.focus();
+    }
+
+    function showOtpStep(phone) {
+      loginMain.hidden = true;
+      loginPhone.hidden = true;
+      loginOtp.hidden = false;
+      otpPhoneLabel.textContent = phone.replace(/(\d{2})(\d{4})(\d{4})/, '+91 $1XXX$3');
+      otpInput.value = '';
+      otpInput.focus();
+      verifyOtpBtn.disabled = true;
+    }
+
+    // ── reCAPTCHA Verifier ────────────────────────────────────────────────
+    function getRecaptchaVerifier() {
+      if (!recaptchaVerifier) {
+        recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+          size: 'invisible',
+          callback: () => { /* reCAPTCHA solved */ }
+        });
+      }
+      return recaptchaVerifier;
+    }
+
+    // ── Phone Auth Flow ───────────────────────────────────────────────────
+    function isValidIndianPhone(num) {
+      return /^[6-9]\d{9}$/.test(num);
+    }
+
+    phoneInput.addEventListener('input', () => {
+      phoneInput.value = phoneInput.value.replace(/\D/g, '').slice(0, 10);
+      sendOtpBtn.disabled = !isValidIndianPhone(phoneInput.value);
+    });
+
+    phoneInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !sendOtpBtn.disabled) sendOtpBtn.click();
+    });
+
+    phoneSignInBtn.addEventListener('click', showPhoneStep);
+    backToLoginBtn.addEventListener('click', showLogin);
+
+    sendOtpBtn.addEventListener('click', async () => {
+      const num = phoneInput.value.trim();
+      if (!isValidIndianPhone(num)) return;
+
+      phoneNumber = '+91' + num;
+      sendOtpBtn.disabled = true;
+      sendOtpBtn.textContent = 'OTP भेजा जा रहा है...';
+
+      try {
+        const appVerifier = getRecaptchaVerifier();
+        confirmationResult = await auth.signInWithPhoneNumber(phoneNumber, appVerifier);
+        showOtpStep(phoneNumber);
+      } catch (err) {
+        console.error('Phone auth error:', err);
+        showToast('OTP नहीं भेज पाए — नंबर जाँचें और फिर कोशिश करें');
+        // Reset reCAPTCHA so it can be tried again
+        if (recaptchaVerifier) { recaptchaVerifier.clear(); recaptchaVerifier = null; }
+      } finally {
+        sendOtpBtn.disabled = false;
+        sendOtpBtn.textContent = 'OTP भेजें 📨';
+      }
+    });
+
+    otpInput.addEventListener('input', () => {
+      otpInput.value = otpInput.value.replace(/\D/g, '').slice(0, 6);
+      verifyOtpBtn.disabled = otpInput.value.length < 6;
+    });
+
+    otpInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !verifyOtpBtn.disabled) verifyOtpBtn.click();
+    });
+
+    verifyOtpBtn.addEventListener('click', async () => {
+      if (otpInput.value.length < 6 || !confirmationResult) return;
+      verifyOtpBtn.disabled = true;
+      verifyOtpBtn.textContent = 'वेरिफ़ाई हो रहा है...';
+
+      try {
+        await confirmationResult.confirm(otpInput.value);
+        // onAuthStateChanged will fire and hide login
+      } catch (err) {
+        console.error('OTP verify error:', err);
+        showToast('गलत OTP — फिर कोशिश करें');
+        otpInput.value = '';
+        otpInput.focus();
+        verifyOtpBtn.disabled = true;
+      } finally {
+        verifyOtpBtn.textContent = 'वेरिफ़ाई करें ✅';
+      }
+    });
+
+    resendOtpBtn.addEventListener('click', () => {
+      showPhoneStep();
+    });
+    backToPhoneBtn.addEventListener('click', () => {
+      showPhoneStep();
+    });
+
+    // ── Google Auth ───────────────────────────────────────────────────────
     googleSignInBtn.addEventListener('click', () => {
       auth.signInWithPopup(googleProvider).catch(err => {
         console.error('Auth error:', err);

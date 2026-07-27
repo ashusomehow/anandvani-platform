@@ -932,7 +932,14 @@
 
     function onRecordingDone() {
       setUiState('processing');
-      const text = finalTranscript.trim();
+      // On iOS, final transcripts may not arrive; fall back to interim text shown on screen
+      let text = finalTranscript.trim();
+      if (!text) {
+        const displayed = transcriptDisp.textContent.trim();
+        if (displayed && displayed !== '...' && displayed !== 'आप जो बोलेंगे वह यहाँ दिखेगा...') {
+          text = displayed;
+        }
+      }
       transcriptDisp.classList.remove('active');
 
       if (!text) {
