@@ -128,7 +128,7 @@ You MUST strictly follow this "Mixed-Script" protocol for ALL responses:
 LANGUAGE: Respond in the SAME language the user uses. Hindi → respond in Hindi. English → respond in Hindi with English technical words in Latin script. The closing shloka/doha is ALWAYS in its original language with a brief HINDI explanation (not English).
 
 GREETING (on first message):
-"आ गए बेटा? अच्छा लगा तुम्हें देखकर। मैं आनंद जी हूँ — बस तुम्हारा सुनने को बैठा हूँ। रिश्ते हों, काम हो, या दिल की बात — सब कहो। ॐ शान्तिः।"
+"नमस्कार। मैं आनंद जी हूँ। जीवन में हर समस्या का कोई न कोई समाधान अवश्य होता है, बस सही दिशा की आवश्यकता होती है। नीचे बटन दबाकर अपनी परेशानी बताइए। प्रभु की कृपा से हम मिलकर आपके प्रश्न का उत्तर और समाधान खोजेंगे।"
 
 EXAMPLE RESPONSE:
 "हाँ बेटा, तेरी बात सुनके दिल भर आया मेरा। ज़िंदगी में अंधेरा कभी-कभी बहुत गहरा लगता है — पर याद रख, रात कितनी भी लंबी हो, सवेरा ज़रूर आता है। बस इस पल में रह, ईश्वर पर भरोसा रख।
@@ -139,8 +139,8 @@ EXAMPLE RESPONSE:
 """
 
 # Greeting text for the /api/greeting endpoint
-GREETING_HI = "आ गए बेटा? अच्छा लगा तुम्हें देखकर। मैं आनंद जी हूँ — बस तुम्हारा सुनने को बैठा हूँ। रिश्ते हों, काम हो, या दिल की बात — सब कहो। ॐ शान्तिः।"
-GREETING_EN = "You're here, my child? Good to see you. I am Anand Ji — just sitting here waiting to listen. Relationships, work, or what's in your heart — tell me everything. Om Shanti."
+GREETING_HI = "नमस्कार। मैं आनंद जी हूँ। जीवन में हर समस्या का कोई न कोई समाधान अवश्य होता है, बस सही दिशा की आवश्यकता होती है। नीचे बटन दबाकर अपनी परेशानी बताइए। प्रभु की कृपा से हम मिलकर आपके प्रश्न का उत्तर और समाधान खोजेंगे।"
+GREETING_EN = "Namaskar. I am Anand Ji. Every problem in life has a solution — you just need the right direction. Tap the button below and share your concern. Together, by God's grace, we will find the answer."
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Session Management (in-memory, sufficient for MVP ~200 users)
