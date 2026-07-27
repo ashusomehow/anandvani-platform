@@ -481,10 +481,11 @@ async def analytics_summary():
 
 # FRONTEND_DIR — single source of truth for the UI.
 FRONTEND_DIR = Path(__file__).resolve().parent.parent / "frontend"
-INDEX_HTML = (FRONTEND_DIR / "index.html").read_text(encoding="utf-8")
 
 
 @app.get("/")
 async def serve_index():
     from fastapi.responses import HTMLResponse
-    return HTMLResponse(INDEX_HTML)
+    index_file = FRONTEND_DIR / "index.html"
+    html = index_file.read_text(encoding="utf-8") if index_file.exists() else "<h1>AanandVaani — coming soon</h1>"
+    return HTMLResponse(html)
