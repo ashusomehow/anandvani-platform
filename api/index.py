@@ -479,7 +479,7 @@ async def analytics_summary():
 # Serve Frontend — so everything runs from localhost:8000 (no CORS issues)
 # ──────────────────────────────────────────────────────────────────────────────
 
-FRONTEND_DIR — single source of truth for the UI.
+# FRONTEND_DIR — single source of truth for the UI.
 FRONTEND_DIR = Path(__file__).resolve().parent.parent / "frontend"
 INDEX_HTML = (FRONTEND_DIR / "index.html").read_text(encoding="utf-8")
 
