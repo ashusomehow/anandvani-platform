@@ -24,11 +24,10 @@ import httpx
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 # Load .env file if present (easier than shell export for local dev)
-load_dotenv(Path(__file__).resolve().parent / ".env")
+load_dotenv(Path(__file__).resolve().parent / ".." / "backend" / ".env")
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Logging
@@ -66,8 +65,8 @@ OPENROUTER_API_KEY: str  = os.getenv("OPENROUTER_API_KEY", "")
 OPENROUTER_BASE_URL: str = "https://openrouter.ai/api/v1/chat/completions"
 
 # Free models on OpenRouter (verified June 2026):
-#   deepseek/deepseek-v4-flash:free ← lowest latency (flash)
-#   google/gemma-4-31b-it:free     ← best Hindi quality, slightly slower
+#   google/gemma-4-31b-it:free     ← default, best Hindi quality
+#   deepseek/deepseek-v4-flash:free
 #   google/gemma-4-26b-a4b-it:free
 #   moonshotai/kimi-k2.6:free
 OPENROUTER_MODEL: str = os.getenv("OPENROUTER_MODEL", "deepseek/deepseek-v4-flash:free")
@@ -140,7 +139,7 @@ EXAMPLE RESPONSE:
 
 # Greeting text for the /api/greeting endpoint
 GREETING_HI = "आ गए बेटा? अच्छा लगा तुम्हें देखकर। मैं आनंद जी हूँ — बस तुम्हारा सुनने को बैठा हूँ। रिश्ते हों, काम हो, या दिल की बात — सब कहो। ॐ शान्तिः।"
-GREETING_EN = "You're here, my child? Good to see you. I am Anand Ji — just sitting here waiting to listen. Relationships, work, or what's in your heart — tell me everything. Om Shanti."
+GREETING_EN = "Jai Shree Ram, dear child. I am Anand Ji Maharaj. Tell me, what weighs on your heart today? Speak freely — I am listening. Om Shanti."
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Session Management (in-memory, sufficient for MVP ~200 users)
@@ -395,12 +394,15 @@ async def reset_session(body: ResetRequest):
 
 
 # ──────────────────────────────────────────────────────────────────────────────
-# Serve Frontend — so everything runs from localhost:8000 (no CORS issues)
+# Serve Frontend
 # ──────────────────────────────────────────────────────────────────────────────
 
+# Read frontend/index.html at import time — single source of truth for the UI.
 FRONTEND_DIR = Path(__file__).resolve().parent.parent / "frontend"
+INDEX_HTML = (FRONTEND_DIR / "index.html").read_text(encoding="utf-8")
 
-# Mount AFTER all API routes — Starlette checks @app.get/post first,
-# then falls through to this for static files (images, manifest, etc.)
-# html=True auto-serves index.html for "/" requests.
-app.mount("/", StaticFiles(directory=str(FRONTEND_DIR), html=True), name="frontend")
+
+@app.get("/")
+async def serve_index():
+    from fastapi.responses import HTMLResponse
+    return HTMLResponse(INDEX_HTML)

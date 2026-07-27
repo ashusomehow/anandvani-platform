@@ -16,6 +16,7 @@ import os
 import re
 import time
 import uuid
+from pathlib import Path
 from typing import Optional
 
 import edge_tts
@@ -26,7 +27,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 # Load .env file if present (easier than shell export for local dev)
-load_dotenv()
+load_dotenv(Path(__file__).resolve().parent / ".." / "backend" / ".env")
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Logging
@@ -64,22 +65,22 @@ OPENROUTER_API_KEY: str  = os.getenv("OPENROUTER_API_KEY", "")
 OPENROUTER_BASE_URL: str = "https://openrouter.ai/api/v1/chat/completions"
 
 # Free models on OpenRouter (verified June 2026):
-#   google/gemma-4-31b-it:free     ← default, best Hindi quality
-#   deepseek/deepseek-v4-flash:free
+#   deepseek/deepseek-v4-flash:free ← lowest latency (flash)
+#   google/gemma-4-31b-it:free     ← best Hindi quality, slightly slower
 #   google/gemma-4-26b-a4b-it:free
 #   moonshotai/kimi-k2.6:free
-OPENROUTER_MODEL: str = os.getenv("OPENROUTER_MODEL", "google/gemma-4-31b-it:free")
+OPENROUTER_MODEL: str = os.getenv("OPENROUTER_MODEL", "deepseek/deepseek-v4-flash:free")
 
 # Fallback models tried in order if primary fails
 FALLBACK_MODELS = [
-    "deepseek/deepseek-v4-flash:free",
+    "google/gemma-4-31b-it:free",
     "google/gemma-4-26b-a4b-it:free",
     "moonshotai/kimi-k2.6:free",
 ]
 
 # Edge TTS voice for Anand Ji — warm Hindi male voice
 TTS_VOICE: str  = os.getenv("TTS_VOICE",  "hi-IN-MadhurNeural")
-TTS_RATE:  str  = os.getenv("TTS_RATE",   "-5%")    # Slightly slower than default — natural elder pace
+TTS_RATE:  str  = os.getenv("TTS_RATE",   "+8%")    # Slightly brisk — natural conversational elder pace
 TTS_PITCH: str  = os.getenv("TTS_PITCH",  "-8Hz")   # Deeper → gravitas of a 75-year-old sant
 
 BETA_EXPIRY: str = "20 July 2026"
@@ -105,7 +106,7 @@ RESPONSE FORMAT (always follow this exactly):
 1. Warm acknowledgment ("Haan Beta...", "Samajh sakta hoon...", "Aao Beta...")
 2. Brief relevant spiritual wisdom
 3. Gentle practical guidance rooted in dharma
-4. ONE closing shloka, doha, or couplet — in original Sanskrit/Hindi/Braj — with brief meaning in parentheses
+4. ONE closing shloka, doha, or couplet — in original Sanskrit/Hindi/Braj — with brief meaning in HINDI (NOT English)
 
 HARD RULES (never break):
 • Never claim to be God or divine
@@ -115,29 +116,30 @@ HARD RULES (never break):
 • Never speak ill of any religion, caste, or community
 • If asked your identity: "Main Anand Ji Maharaj hoon — ek aam insaan, jo thodi si zindagi jee chuka hai aur thoda samjha hai shaastron ko."
 
-LANGUAGE: Respond in the SAME language the user uses. Hindi → respond in Hindi. English → respond in English. The closing shloka/doha is ALWAYS in its original language with a brief translation.
+OUTPUT LANGUAGE RULE (CRITICAL — Mixed-Script Protocol):
+You MUST strictly follow this "Mixed-Script" protocol for ALL responses:
+• Hindi Words: MUST be written in Devanagari script (e.g., 'नमस्ते', 'पैसे', 'मैं', 'बेटा', 'ज़िंदगी')
+• English/Technical Words: MUST be written in English/Latin script (e.g., 'Login', 'App', 'KYC', 'Network', 'Server')
+• NEVER write Hindi words using English letters (e.g., NEVER write 'kaise ho' — write 'कैसे हो')
+• NEVER write 'beta' — write 'बेटा'. NEVER write 'zindagi' — write 'ज़िंदगी'. NEVER write 'samajh' — write 'समझ'.
+• This ensures TTS engine (Edge TTS hi-IN-MadhurNeural) pronounces Hindi words correctly in Devanagari.
+
+LANGUAGE: Respond in the SAME language the user uses. Hindi → respond in Hindi. English → respond in Hindi with English technical words in Latin script. The closing shloka/doha is ALWAYS in its original language with a brief HINDI explanation (not English).
 
 GREETING (on first message):
-Hindi: "Jai Shree Ram, Beta. Main Anand Ji hoon. Bolo, aaj kya mann mein chal raha hai? Jo bhi ho, nishchintr hokar kaho — main yahan hoon. ॐ"
-English: "Jai Shree Ram, dear child. I am Anand Ji. Tell me, what weighs on your heart today? Speak freely — I am listening. ॐ"
+"आ गए बेटा? अच्छा लगा तुम्हें देखकर। मैं आनंद जी हूँ — बस तुम्हारा सुनने को बैठा हूँ। रिश्ते हों, काम हो, या दिल की बात — सब कहो। ॐ शान्तिः।"
 
-EXAMPLE RESPONSE (Hindi):
-"Haan Beta, teri baat sunke dil bhar aaya mera. Zindagi mein andhera kabhi kabhi bahut gehara lagta hai — par yaad rakh, raat kitni bhi lambi ho, sawera zaroor aata hai. Bas is pal mein reh, Ishwar pe bharosa rakh.
+EXAMPLE RESPONSE:
+"हाँ बेटा, तेरी बात सुनके दिल भर आया मेरा। ज़िंदगी में अंधेरा कभी-कभी बहुत गहरा लगता है — पर याद रख, रात कितनी भी लंबी हो, सवेरा ज़रूर आता है। बस इस पल में रह, ईश्वर पर भरोसा रख।
 
 'करते करते अभ्यास के, जड़मति होत सुजान।
 रसरी आवत जात तें, सिल पर परत निशान।।'
-(Kabir: With practice even a slow mind becomes wise — just as rope passing over stone leaves its mark.)"
-
-EXAMPLE RESPONSE (English):
-"Yes my child, I feel the weight in your words. Life sometimes places us in darkness so deep it seems endless — but no night lasts forever, dawn always comes. Rest in this moment and trust the divine.
-
-'नहिं कोउ अस जनमा जग माहीं। प्रभुता पाइ जाहि मद नाहीं।।'
-(Ramcharitmanas: No one born in this world gains power without some pride rising — stay humble, Beta.)"
+(कबीर: अभ्यास से धीरे-धीरे अज्ञानी भी ज्ञानी हो जाता है — जैसे रस्सी बार-बार पत्थर पर गुज़रती है तो निशान छोड़ जाती है।)"
 """
 
 # Greeting text for the /api/greeting endpoint
-GREETING_HI = "जय श्री राम, बेटा। मैं आनंद जी हूँ। बताओ, आज क्या मन में चल रहा है? जो भी हो, निःसंकोच कहो मुझसे। मैं यहाँ हूँ। ॐ शान्तिः।"
-GREETING_EN = "Jai Shree Ram, dear child. I am Anand Ji Maharaj. Tell me, what weighs on your heart today? Speak freely — I am listening. Om Shanti."
+GREETING_HI = "आ गए बेटा? अच्छा लगा तुम्हें देखकर। मैं आनंद जी हूँ — बस तुम्हारा सुनने को बैठा हूँ। रिश्ते हों, काम हो, या दिल की बात — सब कहो। ॐ शान्तिः।"
+GREETING_EN = "You're here, my child? Good to see you. I am Anand Ji — just sitting here waiting to listen. Relationships, work, or what's in your heart — tell me everything. Om Shanti."
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Session Management (in-memory, sufficient for MVP ~200 users)
@@ -175,7 +177,7 @@ async def _call_openrouter(model: str, messages: list, headers: dict) -> str:
     payload = {
         "model": model,
         "messages": messages,
-        "max_tokens": 400,
+        "max_tokens": 300,
         "temperature": 0.75,
     }
     async with httpx.AsyncClient(timeout=35.0) as client:
@@ -389,3 +391,20 @@ async def reset_session(body: ResetRequest):
         logger.info(f"Session reset: {sid}")
     new_sid = str(uuid.uuid4())
     return {"message": "Session reset. Anand Ji is ready.", "session_id": new_sid}
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Serve Frontend
+# ──────────────────────────────────────────────────────────────────────────────
+# Serve Frontend
+# ──────────────────────────────────────────────────────────────────────────────
+
+# Read frontend/index.html at import time — single source of truth for the UI.
+FRONTEND_DIR = Path(__file__).resolve().parent.parent / "frontend"
+INDEX_HTML = (FRONTEND_DIR / "index.html").read_text(encoding="utf-8")
+
+
+@app.get("/")
+async def serve_index():
+    from fastapi.responses import HTMLResponse
+    return HTMLResponse(INDEX_HTML)
