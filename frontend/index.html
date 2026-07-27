@@ -17,6 +17,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;600;700&family=Noto+Serif+Devanagari:wght@600;700&family=Tiro+Devanagari+Hindi&display=swap" rel="stylesheet">
 
+  <!-- Firebase Auth SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+
   <style>
     /* ── Reset ──────────────────────────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -613,6 +617,186 @@
       padding: 4px 8px;
     }
 
+    /* ── Login overlay ───────────────────────────────────────────────────────── */
+    #login-overlay {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(160deg, #1A0400 0%, #5A1200 50%, #1A0400 100%);
+      z-index: 500;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      padding: 32px;
+      transition: opacity 0.5s;
+    }
+    #login-overlay.hidden { opacity: 0; pointer-events: none; }
+    .login-logo {
+      width: 100px;
+      height: 100px;
+      border-radius: 24px;
+      object-fit: cover;
+    }
+    .login-title {
+      font-family: 'Noto Serif Devanagari', serif;
+      font-size: 28px;
+      color: #F5C060;
+      text-align: center;
+      line-height: 1.4;
+      text-shadow: 0 0 20px rgba(245,180,60,0.40);
+    }
+    .login-subtitle {
+      font-size: var(--fs-base);
+      color: rgba(245,200,100,0.70);
+      text-align: center;
+      max-width: 300px;
+      line-height: 1.6;
+    }
+    #google-signin-btn {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: white;
+      border: none;
+      border-radius: 24px;
+      padding: 14px 28px;
+      font-size: var(--fs-base);
+      font-family: 'Mukta', sans-serif;
+      font-weight: 700;
+      color: #333;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.20);
+      transition: transform 0.15s, box-shadow 0.15s;
+      margin-top: 10px;
+    }
+    #google-signin-btn:active { transform: scale(0.95); }
+    #google-signin-btn img { width: 24px; height: 24px; }
+    .login-footer {
+      font-size: var(--fs-xs);
+      color: rgba(255,255,255,0.35);
+      text-align: center;
+      max-width: 280px;
+      line-height: 1.5;
+      margin-top: 20px;
+    }
+    .login-user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: rgba(255,245,220,0.85);
+      font-size: var(--fs-sm);
+      cursor: pointer;
+    }
+    .login-user-info img {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .login-user-info .logout-text {
+      font-size: var(--fs-xs);
+      color: rgba(255,200,100,0.60);
+    }
+
+    /* ── Feedback overlay ─────────────────────────────────────────────────────── */
+    #feedback-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(44,14,0,0.65);
+      z-index: 400;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    #feedback-overlay[hidden] { display: none; }
+    #feedback-card {
+      background: var(--bg);
+      border-radius: 24px;
+      padding: 32px 24px;
+      max-width: 340px;
+      width: 100%;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+      text-align: center;
+    }
+    #feedback-card h2 {
+      font-family: 'Noto Serif Devanagari', serif;
+      font-size: var(--fs-xl);
+      color: var(--saffron);
+      margin-bottom: 8px;
+    }
+    #feedback-card p {
+      font-size: var(--fs-base);
+      color: var(--text);
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+    .feedback-emojis {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .feedback-emojis button {
+      font-size: 36px;
+      background: none;
+      border: 2px solid transparent;
+      border-radius: 50%;
+      width: 56px;
+      height: 56px;
+      cursor: pointer;
+      transition: transform 0.15s, border-color 0.15s;
+      padding: 0;
+      line-height: 1;
+    }
+    .feedback-emojis button:hover { transform: scale(1.2); }
+    .feedback-emojis button.selected { border-color: var(--saffron); transform: scale(1.15); }
+    #feedback-comment {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1.5px solid rgba(192,120,8,0.30);
+      border-radius: 12px;
+      font-size: var(--fs-base);
+      font-family: 'Mukta', sans-serif;
+      color: var(--text);
+      background: rgba(255,245,232,0.50);
+      resize: none;
+      outline: none;
+      margin-bottom: 16px;
+    }
+    #feedback-comment:focus { border-color: var(--saffron); }
+    #feedback-submit {
+      padding: 14px 32px;
+      background: var(--saffron);
+      color: white;
+      border: none;
+      border-radius: 20px;
+      font-size: var(--fs-base);
+      font-family: 'Mukta', sans-serif;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    #feedback-submit:disabled { opacity: 0.4; cursor: default; }
+    #feedback-thanks {
+      display: none;
+      font-size: var(--fs-lg);
+      color: var(--green);
+      padding: 20px 0;
+      font-weight: 700;
+    }
+    #feedback-skip {
+      background: none;
+      border: none;
+      font-size: var(--fs-sm);
+      color: var(--text-muted);
+      cursor: pointer;
+      margin-top: 12px;
+      padding: 8px;
+      font-family: 'Mukta', sans-serif;
+    }
+
     /* ── Toast ──────────────────────────────────────────────────────────────── */
     #toast {
       position: fixed;
@@ -673,6 +857,37 @@
 </head>
 
 <body>
+
+  <!-- Login overlay -->
+  <div id="login-overlay">
+    <img src="logo.png" class="login-logo" alt="आनंदवाणी">
+    <div class="login-title">आनंदवाणी</div>
+    <div class="login-subtitle">आनंद जी महाराज से बात करें — निःशुल्क, सुरक्षित, गोपनीय</div>
+    <button id="google-signin-btn">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="">
+      Google से साइन इन करें
+    </button>
+    <div class="login-footer">🔒 आपका डेटा सुरक्षित है · कोई शुल्क नहीं</div>
+  </div>
+
+  <!-- Feedback overlay -->
+  <div id="feedback-overlay" hidden>
+    <div id="feedback-card">
+      <h2>🙏 आपका अनुभव</h2>
+      <p>आनंद जी से बातचीत कैसी लगी?</p>
+      <div class="feedback-emojis">
+        <button data-rating="1" title="बहुत बुरा">😞</button>
+        <button data-rating="2" title="ठीक नहीं">😐</button>
+        <button data-rating="3" title="ठीक है">🙂</button>
+        <button data-rating="4" title="अच्छा लगा">😊</button>
+        <button data-rating="5" title="बहुत अच्छा">🌟</button>
+      </div>
+      <textarea id="feedback-comment" placeholder="कोई सुझाव? (वैकल्पिक)" rows="2"></textarea>
+      <button id="feedback-submit" disabled>भेजें 🙏</button>
+      <div id="feedback-thanks">धन्यवाद! आपका सुझाव कीमती है 🙏</div>
+      <button id="feedback-skip">अभी नहीं</button>
+    </div>
+  </div>
 
   <!-- Loading screen -->
   <div id="loading-screen">
@@ -799,12 +1014,34 @@
       : (window.BACKEND_URL || PROD_BACKEND);
     // ─────────────────────────────────────────────────────────────────────────
 
+    // ═════════════════════════════════════════════════════════════════════════
+    // Firebase Auth
+    // ═════════════════════════════════════════════════════════════════════════
+
+    firebase.initializeApp({
+      apiKey: "AIzaSyBSi8CyQHI5prWjzytqhWnmSyBB4-CTqHM",
+      authDomain: "anandvani-165ab.firebaseapp.com",
+      projectId: "anandvani-165ab",
+      storageBucket: "anandvani-165ab.firebasestorage.app",
+      messagingSenderId: "138144889812",
+      appId: "1:138144889812:web:d609cda533bb1c676f7441",
+      measurementId: "G-3H8H9DTEDZ"
+    });
+    const auth = firebase.auth();
+    const googleProvider = new firebase.auth.GoogleAuthProvider();
+
+    let currentUser = null;  // { uid, displayName, photoURL }
+
     // ── State ─────────────────────────────────────────────────────────────────
     let sessionId   = localStorage.getItem('aanandvaani_session') || null;
     let uiState     = 'idle';   // idle | recording | processing | speaking
     let recognition = null;
     let currentAudio= null;
     let finalTranscript = '';
+    let conversationCount = 0;     // tracks turns for feedback trigger
+    let feedbackShown = false;     // only show feedback once per session
+    let selectedRating = 0;        // for feedback
+    let appReady = false;          // auth complete + greeting loaded
 
     // ── DOM refs ──────────────────────────────────────────────────────────────
     const micBtn          = document.getElementById('mic-btn');
@@ -821,12 +1058,116 @@
     const hintDismissed = localStorage.getItem('hint_dismissed');
     if (hintDismissed) hintBar.classList.add('hidden');
 
-    // ── Initialise ────────────────────────────────────────────────────────────
-    window.addEventListener('DOMContentLoaded', async () => {
+    // ═════════════════════════════════════════════════════════════════════════
+    // Auth Helpers
+    // ═════════════════════════════════════════════════════════════════════════
+
+    const loginOverlay    = document.getElementById('login-overlay');
+    const googleSignInBtn = document.getElementById('google-signin-btn');
+    const feedbackOverlay = document.getElementById('feedback-overlay');
+    const feedbackEmojis  = document.querySelectorAll('.feedback-emojis button');
+    const feedbackComment = document.getElementById('feedback-comment');
+    const feedbackSubmit  = document.getElementById('feedback-submit');
+    const feedbackThanks  = document.getElementById('feedback-thanks');
+    const feedbackSkip    = document.getElementById('feedback-skip');
+    let loginResolve = null;  // promise resolver for auth
+
+    function showLogin() {
+      loginOverlay.classList.remove('hidden');
+    }
+
+    function hideLogin() {
+      loginOverlay.classList.add('hidden');
+    }
+
+    googleSignInBtn.addEventListener('click', () => {
+      auth.signInWithPopup(googleProvider).catch(err => {
+        console.error('Auth error:', err);
+        showToast('साइन इन नहीं हो पाया — फिर कोशिश करें');
+      });
+    });
+
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        currentUser = { uid: user.uid, displayName: user.displayName || '', photoURL: user.photoURL || '' };
+        hideLogin();
+        // Start app after auth
+        if (!appReady) {
+          appReady = true;
+          startApp();
+        }
+      } else {
+        currentUser = null;
+        showLogin();
+      }
+    });
+
+    // ── Analytics Helpers ────────────────────────────────────────────────────
+    function sendAnalytics(event, metadata = {}) {
+      const body = { event, user_id: currentUser?.uid, user_name: currentUser?.displayName, metadata };
+      // Fire-and-forget — don't block on analytics
+      fetch(`${BACKEND_URL}/api/analytics`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
+      }).catch(() => {});
+    }
+
+    // ── Feedback ──────────────────────────────────────────────────────────────
+    function showFeedback() {
+      if (feedbackShown) return;
+      feedbackShown = true;
+      selectedRating = 0;
+      feedbackEmojis.forEach(b => b.classList.remove('selected'));
+      feedbackComment.value = '';
+      feedbackSubmit.disabled = true;
+      feedbackThanks.style.display = 'none';
+      feedbackSubmit.style.display = 'block';
+      feedbackComment.style.display = 'block';
+      feedbackOverlay.removeAttribute('hidden');
+    }
+
+    function hideFeedback() {
+      feedbackOverlay.setAttribute('hidden', '');
+    }
+
+    feedbackEmojis.forEach(btn => {
+      btn.addEventListener('click', () => {
+        feedbackEmojis.forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        selectedRating = parseInt(btn.dataset.rating);
+        feedbackSubmit.disabled = false;
+      });
+    });
+
+    feedbackSubmit.addEventListener('click', async () => {
+      if (!selectedRating) return;
+      feedbackSubmit.disabled = true;
+      try {
+        await fetch(`${BACKEND_URL}/api/feedback`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            user_id: currentUser?.uid,
+            rating: selectedRating,
+            comment: feedbackComment.value.trim(),
+          }),
+        });
+        sendAnalytics('feedback_submitted', { rating: selectedRating });
+      } catch (e) { /* ignore */ }
+      feedbackSubmit.style.display = 'none';
+      feedbackComment.style.display = 'none';
+      feedbackThanks.style.display = 'block';
+      setTimeout(hideFeedback, 2000);
+    });
+
+    feedbackSkip.addEventListener('click', hideFeedback);
+
+    // ── Init — called after auth ─────────────────────────────────────────────
+    async function startApp() {
+      sendAnalytics('session_started');
       checkBrowserSupport();
       await loadGreeting();
       hideLoadingScreen();
-    });
+    }
 
     function hideLoadingScreen() {
       setTimeout(() => {
@@ -953,6 +1294,7 @@
 
       addUserMessage(text);
       resetTranscript();
+      sendAnalytics('conversation_sent', { text_length: text.length });
       sendToBackend(text);
     }
 
@@ -981,7 +1323,7 @@
         const res = await fetch(`${BACKEND_URL}/api/chat`, {
           method:  'POST',
           headers: { 'Content-Type': 'application/json' },
-          body:    JSON.stringify({ text, session_id: sessionId }),
+          body:    JSON.stringify({ text, session_id: sessionId, user_id: currentUser?.uid, user_name: currentUser?.displayName }),
         });
 
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -996,6 +1338,13 @@
 
         removeTypingIndicator();
         addAnandMessage(data.response);
+        sendAnalytics('conversation_completed');
+
+        // Show feedback after 3 conversation turns
+        conversationCount++;
+        if (conversationCount >= 3 && !feedbackShown) {
+          setTimeout(showFeedback, 2000);
+        }
 
         if (data.audio) {
           playAudio(data.audio);
@@ -1241,7 +1590,7 @@
         await fetch(`${BACKEND_URL}/api/reset`, {
           method:  'POST',
           headers: { 'Content-Type': 'application/json' },
-          body:    JSON.stringify({ session_id: sessionId }),
+          body:    JSON.stringify({ session_id: sessionId, user_id: currentUser?.uid }),
         });
       } catch (e) { /* ignore */ }
 

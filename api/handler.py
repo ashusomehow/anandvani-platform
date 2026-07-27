@@ -149,6 +149,34 @@ sessions: dict[str, dict] = {}
 SESSION_MAX_MESSAGES = 24   # 12 conversation turns
 SESSION_TTL_SECONDS   = 86400  # 24 hours
 
+# ── Analytics (in-memory — survives cold starts long enough for 100 convos) ──
+analytics_store: dict = {
+    "events": [],
+    "feedback": [],
+    "unique_users": set(),
+}
+
+
+def track_event(event_type: str, user_id: str, metadata: dict = None):
+    analytics_store["events"].append({
+        "type": event_type,
+        "user_id": user_id,
+        "ts": __import__('time').time(),
+        "metadata": metadata or {},
+    })
+    if user_id:
+        analytics_store["unique_users"].add(user_id)
+
+
+def track_feedback(user_id: str, rating: int, comment: str = ""):
+    analytics_store["feedback"].append({
+        "user_id": user_id,
+        "rating": rating,
+        "comment": comment,
+        "ts": __import__('time').time(),
+    })
+
+
 
 def get_or_create_session(session_id: Optional[str]) -> tuple[str, dict]:
     now = time.time()
@@ -329,6 +357,8 @@ async def get_greeting(lang: str = "hi"):
 class ChatRequest(BaseModel):
     text: str
     session_id: Optional[str] = None
+    user_id: Optional[str] = None
+    user_name: Optional[str] = None
 
 
 @app.post("/api/chat")
@@ -371,6 +401,12 @@ async def chat(request: ChatRequest):
     except Exception as exc:
         logger.warning(f"TTS error (response will be text-only): {exc}")
 
+    # Track conversation event
+    track_event("conversation_completed", request.user_id or session_id, {
+        "user_name": request.user_name,
+        "message_length": len(request.text),
+    })
+
     return {
         "response":   response_text,
         "audio":      audio_b64,          # None if TTS failed — frontend handles gracefully
@@ -391,6 +427,56 @@ async def reset_session(body: ResetRequest):
         logger.info(f"Session reset: {sid}")
     new_sid = str(uuid.uuid4())
     return {"message": "Session reset. Anand Ji is ready.", "session_id": new_sid}
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Analytics / Feedback Endpoints
+# ──────────────────────────────────────────────────────────────────────────────
+
+
+class AnalyticsRequest(BaseModel):
+    event: str
+    user_id: Optional[str] = None
+    user_name: Optional[str] = None
+    metadata: Optional[dict] = None
+
+
+class FeedbackRequest(BaseModel):
+    user_id: Optional[str] = None
+    rating: int   # 1-5
+    comment: Optional[str] = None
+
+
+@app.post("/api/analytics")
+async def post_analytics(body: AnalyticsRequest):
+    track_event(body.event, body.user_id or "anonymous", body.metadata)
+    return {"ok": True}
+
+
+@app.post("/api/feedback")
+async def post_feedback(body: FeedbackRequest):
+    if body.rating < 1 or body.rating > 5:
+        raise HTTPException(status_code=400, detail="Rating must be 1-5")
+    track_feedback(body.user_id or "anonymous", body.rating, body.comment or "")
+    logger.info(f"Feedback: {body.user_id} rating={body.rating}")
+    return {"ok": True}
+
+
+@app.get("/api/analytics/summary")
+async def analytics_summary():
+    events = analytics_store["events"]
+    feedback = analytics_store["feedback"]
+    conversations = [e for e in events if e["type"] == "conversation_completed"]
+    unique = len(analytics_store["unique_users"])
+    avg_rating = (sum(f["rating"] for f in feedback) / len(feedback)) if feedback else 0
+    return {
+        "total_conversations": len(conversations),
+        "total_events": len(events),
+        "unique_users": unique,
+        "total_feedback": len(feedback),
+        "avg_rating": round(avg_rating, 2),
+        "feedback_list": feedback[-50:],  # last 50
+    }
 
 
 # ──────────────────────────────────────────────────────────────────────────────
