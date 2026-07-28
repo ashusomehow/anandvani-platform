@@ -1366,7 +1366,14 @@
     googleSignInBtn.addEventListener('click', () => {
       auth.signInWithPopup(googleProvider).catch(err => {
         console.error('Auth error:', err);
-        showToast('साइन इन नहीं हो पाया — फिर कोशिश करें');
+        const msg = err.code === 'auth/popup-blocked'
+          ? 'पॉप-अप ब्लॉक हो गया — कृपया इस साइट के लिए पॉप-अप अनुमति दें'
+          : err.code === 'auth/unauthorized-domain'
+          ? 'यह डोमेन अधिकृत नहीं है — Firebase Console में जोड़ें'
+          : err.code === 'auth/operation-not-allowed'
+          ? 'Google साइन-इन सक्षम नहीं है — Firebase Console में चालू करें'
+          : 'साइन इन नहीं हो पाया (' + err.code + ')' + (err.message ? ': ' + err.message : '');
+        showToast(msg);
       });
     });
 
